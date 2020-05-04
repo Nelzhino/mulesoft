@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd">
+    <http:listener-config name="HTTP_Listener_Configuration" host="localhost" port="9090" basePath="/example" doc:name="HTTP Listener Configuration"/>
+    <flow name="exampleFlow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flow" allowedMethods="GET" doc:name="HTTP"/>
+        <set-variable variableName="nombre" value="Nelson" doc:name="Variable"/>
+        <set-session-variable variableName="nombre" value="Armando" doc:name="Session Variable"/>
+        <logger message="#[flowVars.nombre]" level="INFO" doc:name="Logger"/>
+        <logger message="#[sessionVars.nombre]" level="INFO" doc:name="Logger"/>
+        <vm:outbound-endpoint exchange-pattern="one-way" path="endpoint" doc:name="VM"/>
+    </flow>
+    <flow name="exampleFlow1">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="endpoint" doc:name="VM"/>
+        <logger message="#['Nombre Var: '+ flowVars.nombr + ' Nombre sesion: '+ sessionVars.nombre ] " level="INFO" doc:name="Logger"/>
+    </flow>
+</mule>

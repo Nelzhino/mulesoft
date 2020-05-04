@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:mock="http://www.mulesoft.org/schema/mule/mock" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:munit="http://www.mulesoft.org/schema/mule/munit" xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:core="http://www.mulesoft.org/schema/mule/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/mock http://www.mulesoft.org/schema/mule/mock/current/mule-mock.xsd
+http://www.mulesoft.org/schema/mule/munit http://www.mulesoft.org/schema/mule/munit/current/mule-munit.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<munit:config name="munit" doc:name="MUnit configuration" />
+	<spring:beans>
+		<spring:import resource="classpath:examplerest.xml" />
+		<spring:import resource="classpath:example3.xml" />
+	</spring:beans>
+	<munit:test name="examplerest-test-suite-examplerestFlowTest"
+		description="Test">
+		<mock:when messageProcessor="http:request" doc:name="Mock">
+            <mock:with-attributes>
+                <mock:with-attribute name="doc:name" whereValue="#['HTTP']"/>
+            </mock:with-attributes>
+            <mock:then-return payload="#[getResource('respEjemplo8.json').asString()]" encoding="UTF-8" mimeType="application/json"/>
+		</mock:when>
+		<flow-ref name="examplerestFlow" doc:name="examplerestFlow" />
+		<logger message="#[payload]" level="INFO" doc:name="Logger" />
+		<munit:assert-true condition="#[payload.contains('SO-120')]"
+			doc:name="Assert True" />
+	</munit:test>
+</mule>

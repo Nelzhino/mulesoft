@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:json="http://www.mulesoft.org/schema/mule/json" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/json http://www.mulesoft.org/schema/mule/json/current/mule-json.xsd">
+    
+    <spring:beans>
+    	<spring:bean id="util" class="com.udemy.Utils"></spring:bean>
+    </spring:beans>
+    
+    <flow name="example3Flow">
+        <http:listener config-ref="HTTP_Listener_Configuration" path="/flow3" doc:name="HTTP"/>
+        <logger message="#[json:status]" level="INFO" doc:name="Logger"/>
+        <choice doc:name="Choice">
+            <when expression="#[json:status = 1]">
+                <splitter expression="#[json:lstVehicles]" doc:name="Splitter"/>
+                <logger message="#[json:name] #[json:model ]" level="INFO" doc:name="Logger"/>
+                <invoke object-ref="util" method="changeModel" methodArguments="#[json:name], #[json:model]" methodArgumentTypes="java.lang.String, java.lang.Integer" doc:name="Invoke"/>
+                <collection-aggregator failOnTimeout="true" doc:name="Collection Aggregator"/>
+            </when>
+            <otherwise>
+                <set-payload value="#[['code': 500, 'messages': 'There is an error ']]" doc:name="Set Payload"/>
+            </otherwise>
+        </choice>
+        <json:object-to-json-transformer doc:name="Object to JSON"/>
+    </flow>
+</mule>

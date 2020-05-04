@@ -1,0 +1,13 @@
+{
+	"company": "Toyota",
+	"lstVehicles": [
+		{
+			"name": "Hydant DFT",
+			"model": 2010
+		},
+		{
+			"name": "Hydant KTR",
+			"model": 2012
+		}
+	]
+}

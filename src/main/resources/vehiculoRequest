@@ -1,0 +1,3 @@
+<getVehiculoRequest xmlns="http://spring.io/guides/gs-producing-web-service">
+         <placa>#[json:placa]</placa>
+</getVehiculoRequest>
